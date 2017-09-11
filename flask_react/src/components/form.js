@@ -75,7 +75,10 @@ export class LandsatForm extends React.Component {
     let url = 'http://localhost:5000/preview';
     var self = this;
 
-    console.log(this.state);
+
+    //var data = JSON.stringify(this.state);
+    //console.log(data);
+
     axios.post(url, this.state).then(function (response) {
       console.log(response);
       self.setState({thumbnail_url: response.data['preview_image']});
@@ -85,7 +88,7 @@ export class LandsatForm extends React.Component {
   onsubmit () {
     // post form data and start backgorund task
     // TODO
-    let url = 'http://localhost:5000/submit';
+    let url = 'http://localhost:5000/new_task';
     var self = this;
 
     axios.post(url, self.state).then(function (response) {

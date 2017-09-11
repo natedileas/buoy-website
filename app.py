@@ -3,7 +3,7 @@ from flask import Flask, request, render_template, redirect, \
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from celery import Celery
-
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -29,8 +29,8 @@ def index():
 
 @app.route('/new_task', methods=['POST'])
 def new_task():
-    form = request.form
-    print(form)
+    print('request.data: ', request.data)
+    info = json.loads(request.data.decode('UTF-8'))
 
     _task = background_task.apply_async((form, ))
     task = Task(_task)
@@ -51,14 +51,13 @@ def buoys():
     buoy_ids = ['45012', '45002']   # FIXME dummy data
     return jsonify(buoys=buoy_ids)
 
+
 @app.route('/preview', methods=['POST'])
 def preview():
-    print(request.values)
-    return jsonify(preview_image="")
-
-@app.route('/submit', methods=['POST'])
-def submit():
-    print(request.values)
+    print('request.data: ', request.data)
+    info = json.loads(request.data.decode('UTF-8'))
+    image = info['thumbnail_url']   # i.e. keep it the same for now
+    return jsonify(preview_image=image)
 
 
 @app.route('/enum_tasks', methods=['GET'])
