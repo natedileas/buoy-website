@@ -1,10 +1,12 @@
 from flask import Flask, request, render_template, redirect, \
     url_for, jsonify
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from celery import Celery
 
 
 app = Flask(__name__)
+CORS(app)
 app.config.from_object('settings')
 
 # Initialize Celery
@@ -36,16 +38,27 @@ def new_task():
     db.session.commit()
 
 
-@app.route('/buoy_ids', methods=['GET'])
-def buoy_ids():
+@app.route('/buoys', methods=['GET'])
+def buoys():
     # print request.data
     # TODO make a real call: e.g.
     # metadata = buoycalib.landsat.parse_metadata(directory)
     # _ids = buoycalib.buoy.datasets_in_corners(metadata)
     # then do some display processing and serve that image
+    print(request.args)
+    scene_id = request.args['id']
 
-    _ids = [('buoy1', '45012'), ('buoy2', '45002')]   # FIXME dummy data
-    return jsonify(ids=_ids)
+    buoy_ids = ['45012', '45002']   # FIXME dummy data
+    return jsonify(buoys=buoy_ids)
+
+@app.route('/preview', methods=['POST'])
+def preview():
+    print(request.values)
+    return jsonify(preview_image="")
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    print(request.values)
 
 
 @app.route('/enum_tasks', methods=['GET'])

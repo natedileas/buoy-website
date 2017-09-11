@@ -1,9 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import {Header} from './components/header.js';
+import {LandsatForm} from './components/form.js';
+
+import './index.css';
+
 const BasicExample = () => (
     <div>
-      <h2> Hello world </h2>
+      <Header/>
+      <LandsatForm/>
     </div>
 );
 
