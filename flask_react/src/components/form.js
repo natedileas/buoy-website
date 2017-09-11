@@ -7,15 +7,15 @@ export class LandsatForm extends React.Component {
       this.state = {
           scene_id: "",
           thumbnail_url: "",
-          buoys: [<option value=""></option>],
+          buoys: [],
           buoy: "",
           atmo: ""
       }
   }
 
   scene_id_change(event) {
-    this.setState({scene_id: event.target.value});
     let id = event.target.value;
+    this.setState({scene_id: id});
 
     let _thumbnail_url = "";
 
@@ -34,11 +34,12 @@ export class LandsatForm extends React.Component {
 
     if (_thumbnail_url !== ""){
       console.log(_thumbnail_url);
-      this.update_buoy_ids(id);
-      this.update_atmo_preview();
+      this.setState({thumbnail_url: _thumbnail_url, scene_id: id},
+        () => {
+           this.update_buoy_ids(id);
+           this.update_atmo_preview();
+         });
     }
-
-  	this.setState({thumbnail_url: _thumbnail_url});
   }
 
   update_buoy_ids (id) {
@@ -64,15 +65,18 @@ export class LandsatForm extends React.Component {
   }
 
   atmo_change(event) {
-    this.setState({atmo: event.target.value});
-    this.update_atmo_preview();
+    this.setState({atmo: event.target.value},
+      () => {
+         this.update_atmo_preview();
+       });
   }
 
   update_atmo_preview() {
     let url = 'http://localhost:5000/preview';
     var self = this;
 
-    axios.post(url, self.state).then(function (response) {
+    console.log(this.state);
+    axios.post(url, this.state).then(function (response) {
       console.log(response);
       self.setState({thumbnail_url: response.data['preview_image']});
     });
