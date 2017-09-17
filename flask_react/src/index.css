@@ -5,10 +5,15 @@
   background-color: gray;
   text-decoration: none;
 }
-#form {
+.form {
   margin: 10px;
+  align-content: center;
 }
 html, body, h1 {
  margin: 0;
  margin-top: 0;
+}
+.side {
+  float: left;
+  width: 50%;
 }

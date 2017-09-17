@@ -7,6 +7,7 @@ export class LandsatForm extends React.Component {
       this.state = {
           scene_id: "",
           thumbnail_url: "",
+          thumbnail_url_2: "",
           buoys: [],
           buoy: "",
           atmo: ""
@@ -75,10 +76,6 @@ export class LandsatForm extends React.Component {
     let url = 'http://localhost:5000/preview';
     var self = this;
 
-
-    //var data = JSON.stringify(this.state);
-    //console.log(data);
-
     axios.post(url, this.state).then(function (response) {
       console.log(response);
       self.setState({thumbnail_url: response.data['preview_image']});
@@ -97,25 +94,30 @@ export class LandsatForm extends React.Component {
   }
 
   render() {
-    return <div id="form">
+    return <div>
+    <div className="form side">
     <form onSubmit={this.onsubmit}>
     <p> Scene ID:
-    <input type="text" name="scene_id" value={this.state.scene_id} onChange={this.scene_id_change.bind(this)}/>
-    <br/> Atmosphere Source
+    <input type="text" name="scene_id" value={this.state.scene_id} onChange={this.scene_id_change.bind(this)} size="45"/>
+    <br/> Atmosphere Source:
     <select name="atmo" value={this.state.atmo} onChange={this.atmo_change.bind(this)}>
       <option value="merra">MERRA-2</option>
       <option value="narr">NARR-2</option>
     </select>
     <br/> Buoy ID:
-    <select name="buoy" onChange={this.buoy_change.bind(this)}>
+    <select name="buoy" onChange={this.buoy_change.bind(this)} >
       {this.state.buoys}
     </select>
     <br/>
-    <input type="submit" value="Submit"/>
+    <input type="submit" value="Submit" />
     </p>
     </form>
+    </div>
 
-    <img src={this.state.thumbnail_url} width="300" height="300" alt="scene preview"/>
+    <div className="side">
+      <img src={this.state.thumbnail_url} width="300" height="300" alt="scene preview"/>
+    </div>
+
     </div>;
   }
 }

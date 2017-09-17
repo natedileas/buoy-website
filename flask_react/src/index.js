@@ -3,14 +3,16 @@ import ReactDOM from 'react-dom';
 
 import {Header} from './components/header.js';
 import {LandsatForm} from './components/form.js';
+import {Jobs} from './components/jobs.js';
 
 import './index.css';
 
-const BasicExample = () => (
+const Main = () => (
     <div>
       <Header/>
       <LandsatForm/>
+      <Jobs/>
     </div>
 );
 
-ReactDOM.render(React.createElement(BasicExample), document.getElementById('root'));
+ReactDOM.render(React.createElement(Main), document.getElementById('root'));

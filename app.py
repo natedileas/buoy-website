@@ -62,14 +62,20 @@ def preview():
 
 @app.route('/enum_tasks', methods=['GET'])
 def enum_tasks():
+    # FIXME dummy data
+    return jsonify(jobs=[{"id": "job1"}, {"id": "job2"}, {"id": "job3"}])
+    """
     tasks = Task.query.all()
     task_list = [{'task_id': str(t.task_id), 'scene_id': str(t.scene_id)} for t in tasks]
 
     return jsonify(tasks=task_list)
+    """
 
-
-@app.route('/status/<task_id>')
+@app.route('/status/<task_id>', methods=['GET'])
 def taskstatus(task_id):
+    # FIXME dummy data
+    return jsonify(job_status=task_id+"1")
+    """
     task = download.AsyncResult(task_id)
     if task.state == 'PENDING':
         response = {
@@ -96,6 +102,7 @@ def taskstatus(task_id):
             'status': str(task.info),  # this is the exception raised
         }
     return jsonify(response)
+    """
 
 
 if __name__ == '__main__':
