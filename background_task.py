@@ -33,7 +33,7 @@ def background_task(self, auth=False):
     total_size = int(opened.info().getheader('Content-Length').strip())
 
     progress = 0
-    self.update_state(state='PROGRESS')
+    self.update_state(state='INPROGRESS')
 
     with open(out_file, 'wb') as f:
         while True:
@@ -41,7 +41,8 @@ def background_task(self, auth=False):
             if not chunk: break
             f.write(chunk)
             progress += CHUNK
-            self.update_state(state='PROGRESS',
-                meta={'current': progress, 'total': total_size, 'status': 'asdfghjk'})
+            self.update_state(state='INPROGRESS',
+                meta={'message': 'In progress...'})
 
-    return {'current': total_size, 'total': total_size, 'status': 'Download completed!'}
+    self.update_state(state='DONE', meta={'message': 'Completed'})
+    return {'message': 'Completed!'}

@@ -85,10 +85,13 @@ export class LandsatForm extends React.Component {
   onsubmit () {
     // post form data and start backgorund task
     // TODO
-    let url = 'http://localhost:5000/new_task';
-    var self = this;
 
-    axios.post(url, self.state).then(function (response) {
+    var state = this.state;
+
+    let url = 'http://localhost:5000/new_task';
+
+
+    axios.post(url, state).then(function (response) {
       console.log(response);
     });
   }
@@ -96,7 +99,7 @@ export class LandsatForm extends React.Component {
   render() {
     return <div>
     <div className="form side">
-    <form onSubmit={this.onsubmit}>
+    <form onSubmit={(e) => {e.preventDefault(); this.onsubmit()}}>
     <p> Scene ID:
     <input type="text" name="scene_id" value={this.state.scene_id} onChange={this.scene_id_change.bind(this)} size="45"/>
     <br/> Atmosphere Source:
