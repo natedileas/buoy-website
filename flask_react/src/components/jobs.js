@@ -11,7 +11,7 @@ export class Jobs extends React.Component {
       }
 
       this.update = this.update.bind(this);
-      this.interval = setInterval(this.update, 10000);
+      this.interval = setInterval(this.update, 5000);
   }
 
   update() {
@@ -55,7 +55,11 @@ class Job extends React.Component {
 
     axios.get(self.state.url).then(function (response) {
       console.log(response);
-      self.setState({status: response.data.job_status});
+      let state = response.data.state;
+      self.setState({status:state});
+      if (state === 'SUCCESS'){
+        clearInterval(self.interval);
+      }
     });
   }
 
