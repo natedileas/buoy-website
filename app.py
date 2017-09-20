@@ -1,3 +1,4 @@
+import pickle
 import json
 
 from celery import Celery
@@ -11,15 +12,16 @@ import settings
 
 app = Flask(__name__)
 app.config.from_object('settings')
-CORS(app)   # something about cross-domain requests and security
+CORS(app)   # something something cross-origin request security
 
+# get database reference
 _redis = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT,
                            db=settings.REDIS_DB)
 
 # Initialize Celery
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-celery.conf['CELERY_ACCEPT_CONTENT'] = ['json']
-celery.conf['CELERY_TASK_SERIALIZER'] = 'json'
+celery.conf['CELERY_ACCEPT_CONTENT'] = ['pickle']
+celery.conf['CELERY_TASK_SERIALIZER'] = 'pickle'
 celery.conf.update(app.config)
 
 # these are down here to avoid circular imports, TODO fix
@@ -38,6 +40,8 @@ def new_task():
     info = json.loads(request.data.decode('UTF-8'))
 
     _task = background_task.background_task.apply_async((info, ))
+
+    return 'OK'   # fixes ValueError: View function did not return a response
 
 
 @app.route('/buoys', methods=['GET'])
@@ -68,12 +72,11 @@ def enum_tasks():
     # FIXME dummy data
     #return jsonify(jobs=[{"id": "job1"}, {"id": "job2"}, {"id": "job3"}])
     print(_redis.keys())
-    task_keys = _redis.keys('celery*')
-    task_list = [json.loads(_redis.get(t).decode("UTF-8")) for t in task_keys]
 
-    print (task_list)
+    task_keys = _redis.keys('celery-task-meta-*')
+    task_ids = [{"id": t.decode("UTF-8").replace('celery-task-meta-','')} for t in task_keys]
 
-    return jsonify(jobs=task_list)
+    return jsonify(jobs=task_ids)
 
 
 @app.route('/status/<task_id>', methods=['GET'])
