@@ -4,4 +4,4 @@ start cmd /k redis-server
 
 start cmd /k "cd flask_react && npm start"
 
-python app.py
+env\Scripts\python.exe app.py
