@@ -1,5 +1,7 @@
 import React from 'react';
 import axios from 'axios';
+import { Container } from 'semantic-ui-react';
+
 
 var URL = 'http://localhost:5000/';
 
@@ -24,12 +26,15 @@ export class Jobs extends React.Component {
   }
 
   render() {
-    return <div>
+    this.update();
+    
+    return (
+      <Container>
       <h1>Jobs:</h1>
       {this.state.jobs.map(job =>
         <Job key={job.id} id={job.id}/>
       )}
-    </div>;
+    </Container>)
   }
 }
 
@@ -65,9 +70,9 @@ class Job extends React.Component {
 
   render () {
 
-    return <div className="job">
-        <h3>{this.state.id}</h3>
-        Status: {this.state.status}
-      </div>;
+    return (<Container className="job">
+          <h3>{this.state.id}</h3>
+          Status: {this.state.status}
+      </Container>)
   }
 }

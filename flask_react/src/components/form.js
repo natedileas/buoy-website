@@ -1,5 +1,9 @@
 import React from 'react';
 import axios from 'axios';
+import { Form, Grid, Image } from 'semantic-ui-react';
+
+import 'semantic-ui-css/semantic.min.css';
+
 
 export class LandsatForm extends React.Component {
   constructor(args) {
@@ -84,43 +88,43 @@ export class LandsatForm extends React.Component {
 
   onsubmit () {
     // post form data and start backgorund task
-    // TODO
-
-    var state = this.state;
-
+    var self = this;
     let url = 'http://localhost:5000/new_task';
 
+    // TODO add content checkss
 
-    axios.post(url, state).then(function (response) {
+    axios.post(url, self.state).then(function (response) {
       console.log(response);
+      self.setState({scene_id:"", thumbnail_url: "", buoys: []});
     });
   }
 
   render() {
-    return <div>
-    <div className="form side">
-    <form onSubmit={(e) => {e.preventDefault(); this.onsubmit()}}>
-    <p> Scene ID:
-    <input type="text" name="scene_id" value={this.state.scene_id} onChange={this.scene_id_change.bind(this)} size="45"/>
-    <br/> Atmosphere Source:
-    <select name="atmo" value={this.state.atmo} onChange={this.atmo_change.bind(this)}>
-      <option value="merra">MERRA-2</option>
-      <option value="narr">NARR-2</option>
-    </select>
-    <br/> Buoy ID:
-    <select name="buoy" onChange={this.buoy_change.bind(this)} >
-      {this.state.buoys}
-    </select>
-    <br/>
-    <input type="submit" value="Submit" />
-    </p>
-    </form>
-    </div>
-
-    <div className="side">
-      <img src={this.state.thumbnail_url} width="300" height="300" alt="scene preview"/>
-    </div>
-
-    </div>;
+    return (
+      <Grid columns={2} divided >
+        <Grid.Row>
+          <Grid.Column width={5} className="form side">
+            <Form onSubmit={(e) => {e.preventDefault(); this.onsubmit()}}>
+              <label> Scene ID:</label>
+              <input type="text" name="scene_id" value={this.state.scene_id} onChange={this.scene_id_change.bind(this)} size="45"/>
+              <label> Atmosphere Source:</label>
+              <select name="atmo" value={this.state.atmo} onChange={this.atmo_change.bind(this)}>
+                <option value="merra">MERRA-2</option>
+                <option value="narr">NARR-2</option>
+              </select>
+              <label> Buoy ID:</label>
+              <select name="buoy" onChange={this.buoy_change.bind(this)} >
+                {this.state.buoys}
+              </select>
+              <Form.Button type='submit'>Submit</Form.Button>
+            </Form>
+          </Grid.Column>
+          <Grid.Column width={5}>
+            <label>Scene Preview:</label>
+            <Image src={this.state.thumbnail_url} width="300" height="300"/>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    )
   }
 }
