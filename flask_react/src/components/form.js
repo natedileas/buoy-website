@@ -95,8 +95,8 @@ export class LandsatForm extends React.Component {
 
     axios.post(url, self.state).then(function (response) {
       console.log(response);
-      self.setState({scene_id:"", thumbnail_url: "", buoys: []});
     });
+    self.setState({scene_id:"", thumbnail_url: "", buoys: []});
   }
 
   render() {
