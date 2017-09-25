@@ -13,6 +13,7 @@ export class Jobs extends React.Component {
       }
 
       this.update = this.update.bind(this);
+      this.update();
       this.interval = setInterval(this.update, 5000);
   }
 
@@ -26,8 +27,6 @@ export class Jobs extends React.Component {
   }
 
   render() {
-    this.update();
-    
     return (
       <Container>
       <h1>Jobs:</h1>
