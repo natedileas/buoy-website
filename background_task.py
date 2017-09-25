@@ -1,4 +1,4 @@
-import urllib.request
+import urllib2
 from app import celery
 
 CHUNK = 1024 #* 1024 * 8
@@ -18,13 +18,13 @@ def background_task(self, auth=False):
             'Accept-Language': 'en-US,en;q=0.8',
             'Connection': 'keep-alive'}
 
-    req = urllib.request.Request(source_url, headers=hdr)
+    req = urllib2.Request(source_url, headers=hdr)
 
     out_file = 'test2.jpeg'
 
     try:
-        opened = urllib.request.urlopen(req)
-    except urllib.HTTPError as e:
+        opened = urllib2.urlopen(req)
+    except urllib2.HTTPError as e:
         print(e)
 
     #total_size = int(opened.info().getheader('Content-Length').strip())
