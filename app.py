@@ -8,7 +8,7 @@ from flask_cors import CORS
 import redis
 
 import settings
-
+import buoycalib
 
 app = Flask(__name__)
 app.config.from_object('settings')
@@ -46,15 +46,15 @@ def new_task():
 
 @app.route('/buoys', methods=['GET'])
 def buoys():
-    # print request.data
-    # FIXME dummy data
-    # metadata = buoycalib.landsat.parse_metadata(directory)
-    # _ids = buoycalib.buoy.datasets_in_corners(metadata)
-    # then do some display processing and serve that image
-    print(request.args)
+    """ get buoys in WRS2 path and row """
     scene_id = request.args['id']
+    path = int(scene_id[3:6])
+    row = int(scene_id[6:9])
 
-    buoy_ids = ['45012', '45002']   # FIXME dummy data
+    corners = buoycalib.wrs2.wrs2_to_corners(path, row)
+    buoys = buoycalib.buoy.datasets_in_corners(corners)
+    buoy_ids = buoys.keys()
+    
     return jsonify(buoys=buoy_ids)
 
 
