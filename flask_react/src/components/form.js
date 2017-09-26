@@ -42,7 +42,6 @@ export class LandsatForm extends React.Component {
       this.setState({thumbnail_url: _thumbnail_url, scene_id: id},
         () => {
            this.update_buoy_ids(id);
-           this.update_atmo_preview();
          });
     }
   }
@@ -62,6 +61,7 @@ export class LandsatForm extends React.Component {
       }
 
       self.setState({buoys: buoy_options});
+      self.update_atmo_preview();
     });
   }
 
@@ -121,7 +121,7 @@ export class LandsatForm extends React.Component {
           </Grid.Column>
           <Grid.Column width={5}>
             <label>Scene Preview:</label>
-            <Image src={this.state.thumbnail_url} width="300" height="300"/>
+            <Image key="preview" src={this.state.thumbnail_url} width="300" height="300"/>
           </Grid.Column>
         </Grid.Row>
       </Grid>

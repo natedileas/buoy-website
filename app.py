@@ -3,7 +3,7 @@ import json
 
 from celery import Celery
 from flask import Flask, request, render_template, redirect, \
-    url_for, jsonify
+    url_for, jsonify, send_file
 from flask_cors import CORS
 import redis
 
@@ -54,29 +54,45 @@ def buoys():
     corners = buoycalib.wrs2.wrs2_to_corners(path, row)
     buoys = buoycalib.buoy.datasets_in_corners(corners)
     buoy_ids = buoys.keys()
-    
+
     return jsonify(buoys=buoy_ids)
 
 
 @app.route('/preview', methods=['POST'])
 def preview():
-    # FIXME dummy data
     print('request.data: ', request.data)
     info = json.loads(request.data.decode('UTF-8'))
-    image = info['thumbnail_url']   # i.e. keep it the same for now
-    return jsonify(preview_image=image)
+    image = info['thumbnail_url']
+
+    scene_id = info['scene_id']
+    path = int(scene_id[3:6])
+    row = int(scene_id[6:9])
+
+    corners = buoycalib.wrs2.wrs2_to_corners(path, row)
+
+    buoy_ids = [b['key'] for b in info['buoys']]
+    print buoy_ids
+    ds = buoycalib.buoy.all_datasets()
+    loc = [ds[b][1:3] for b in buoy_ids]
+
+    image = buoycalib.display.draw_latlon(image, r'.\images\test.png', corners, text=buoy_ids, loc=loc)
+
+    return jsonify(preview_image='http://localhost:5000/images/test.png')
 
 
 @app.route('/enum_tasks', methods=['GET'])
 def enum_tasks():
-    # FIXME dummy data
-    #return jsonify(jobs=[{"id": "job1"}, {"id": "job2"}, {"id": "job3"}])
-    print(_redis.keys())
-
     task_keys = _redis.keys('celery-task-meta-*')
     task_ids = [{"id": t.decode("UTF-8").replace('celery-task-meta-','')} for t in task_keys]
 
     return jsonify(jobs=task_ids)
+
+
+@app.route('/images/<img_file>')
+def images(img_file):
+    print img_file
+    return send_file('.\\images\\'+img_file, attachment_filename=img_file,
+                     mimetype='image/png')
 
 
 @app.route('/status/<task_id>', methods=['GET'])
