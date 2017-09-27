@@ -69,15 +69,20 @@ def preview():
     row = int(scene_id[6:9])
 
     corners = buoycalib.wrs2.wrs2_to_corners(path, row)
+    buoys = buoycalib.buoy.datasets_in_corners(corners)
+    buoy_ids = buoys.keys()
 
-    buoy_ids = [b['key'] for b in info['buoys']]
-    print buoy_ids
-    ds = buoycalib.buoy.all_datasets()
-    loc = [ds[b][1:3] for b in buoy_ids]
+    if buoy_ids:
 
-    image = buoycalib.display.draw_latlon(image, r'.\images\test.png', corners, text=buoy_ids, loc=loc)
+        ds = buoycalib.buoy.all_datasets()
+        loc = [ds[b][1:3] for b in buoy_ids]
 
-    return jsonify(preview_image='http://localhost:5000/images/test.png')
+        image_str = buoycalib.display.draw_latlon(image, corners, text=buoy_ids, loc=loc)
+
+        return jsonify(preview_image=image_str)
+
+    else:
+        return jsonify(preview_image=image)
 
 
 @app.route('/enum_tasks', methods=['GET'])
