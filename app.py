@@ -26,7 +26,7 @@ celery.conf.update(app.config)
 
 # these are down here to avoid circular imports, TODO fix
 import background_task
-
+import calib_task
 
 @app.route('/')
 @app.route('/index')
@@ -37,9 +37,9 @@ def index():
 @app.route('/new_task', methods=['POST'])
 def new_task():
     print('newtask request.data: ', request.data)
-    info = json.loads(request.data.decode('UTF-8'))
 
-    _task = background_task.background_task.apply_async((info, ))
+    info = json.loads(request.data.decode('UTF-8'))
+    calib_task.calib_task.apply_async((info))
 
     return 'OK'   # fixes ValueError: View function did not return a response
 
@@ -102,25 +102,14 @@ def images(img_file):
 
 @app.route('/status/<task_id>', methods=['GET'])
 def taskstatus(task_id):
-    # FIXME dummy data
-    #return jsonify(job_status=task_id+"1")
 
-    task = background_task.background_task.AsyncResult(task_id)
-    response = {'state': task.state}
+    task = calib_task.calib_task.AsyncResult(task_id)
+    response = {'state': task.state,
+                'config': task.info.get(config, {})
+                'message': task.info.get('message', str(task.info))
+                'return': task.info.get('return', {})
+                }
 
-    if task.state == 'DONE':
-        response.update({
-            'return': task.info.get('return')
-        })
-    elif task.state == 'INPROGRESS':
-        response.update({
-            'message': task.info.get('message', '')
-        })
-    else:
-        # something went wrong in the background job
-        response.update({
-            'message': str(task.info),  # this is the exception raised
-        })
     return jsonify(response)
 
 
