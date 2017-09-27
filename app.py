@@ -25,7 +25,6 @@ celery.conf['CELERY_TASK_SERIALIZER'] = 'pickle'
 celery.conf.update(app.config)
 
 # these are down here to avoid circular imports, TODO fix
-import background_task
 import calib_task
 
 @app.route('/')
@@ -39,7 +38,7 @@ def new_task():
     print('newtask request.data: ', request.data)
 
     info = json.loads(request.data.decode('UTF-8'))
-    calib_task.calib_task.apply_async((info))
+    calib_task.calib_task.apply_async((info, ))
 
     return 'OK'   # fixes ValueError: View function did not return a response
 
@@ -104,11 +103,17 @@ def images(img_file):
 def taskstatus(task_id):
 
     task = calib_task.calib_task.AsyncResult(task_id)
-    response = {'state': task.state,
-                'config': task.info.get(config, {})
-                'message': task.info.get('message', str(task.info))
+    #print (dir(task))
+    response = {'state': task.state}
+
+    if type(task.info) is dict:
+        response.update({
+                'config': task.info.get('config', {}),
+                'message': task.info.get('message', ''),
                 'return': task.info.get('return', {})
-                }
+                })
+    else:
+        response['message'] = str(task.info)
 
     return jsonify(response)
 

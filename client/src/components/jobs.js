@@ -43,10 +43,14 @@ class Job extends React.Component {
       this.state = {
         status: "",
         id: this.props.id,
+        name: "",
+        message: "",
+        returns: "",
         url: URL + 'status/' + this.props.id,
       }
 
       this.update = this.update.bind(this);
+      this.update();
       this.interval = setInterval(this.update, 1000);
   }
 
@@ -59,19 +63,33 @@ class Job extends React.Component {
 
     axios.get(self.state.url).then(function (response) {
       console.log(response);
-      let state = response.data.state;
-      self.setState({status:state});
-      if (state === 'SUCCESS'){
+
+      if (response.data.state === 'SUCCESS'){
         clearInterval(self.interval);
       }
+
+      if(typeof response.data.config != "undefined"){
+        let _name = response.data.config.scene_id;
+        self.setState({name: _name});
+      }
+
+
+      self.setState({status: response.data.state,
+                  message: response.data.message,
+                  returns: response.data.returns
+                  });
     });
   }
 
   render () {
 
     return (<Container className="job">
-          <h3>{this.state.id}</h3>
-          Status: {this.state.status}
+          <h3>{this.state.name}</h3>
+          ID: {this.state.id}<br/>
+          Status: {this.state.status}<br/>
+          Message: {this.state.message}<br/>
+          Returns: {this.state.returns}
+          <hr/>
       </Container>)
   }
 }
