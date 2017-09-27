@@ -53,7 +53,7 @@ def buoys():
 
     corners = buoycalib.wrs2.wrs2_to_corners(path, row)
     buoys = buoycalib.buoy.datasets_in_corners(corners)
-    buoy_ids = buoys.keys()
+    buoy_ids = list(buoys.keys())
 
     return jsonify(buoys=buoy_ids)
 
@@ -70,7 +70,7 @@ def preview():
 
     corners = buoycalib.wrs2.wrs2_to_corners(path, row)
     buoys = buoycalib.buoy.datasets_in_corners(corners)
-    buoy_ids = buoys.keys()
+    buoy_ids = list(buoys.keys())
 
     if buoy_ids:
 
@@ -95,7 +95,7 @@ def enum_tasks():
 
 @app.route('/images/<img_file>')
 def images(img_file):
-    print img_file
+    print(img_file)
     return send_file('.\\images\\'+img_file, attachment_filename=img_file,
                      mimetype='image/png')
 
