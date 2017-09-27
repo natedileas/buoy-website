@@ -1,4 +1,4 @@
-import urllib2
+import urllib.request as urllib2
 from app import celery
 
 CHUNK = 1024 #* 1024 * 8
