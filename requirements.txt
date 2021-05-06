@@ -6,7 +6,7 @@ celery==3.1.17
 certifi==2017.7.27.1
 chardet==3.0.4
 Flask==0.10.1
-Flask-Cors==3.0.3
+Flask-Cors==3.0.9
 GDAL==2.2.2
 idna==2.6
 itsdangerous==0.24
