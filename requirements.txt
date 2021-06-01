@@ -22,7 +22,7 @@ redis==2.10.3
 requests==2.18.4
 Shapely==1.6.1
 six==1.10.0
-urllib3==1.22
+urllib3==1.26.5
 utm==0.4.2
 Werkzeug==0.9.6
 WTForms==2.1
